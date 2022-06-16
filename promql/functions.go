@@ -20,6 +20,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"fmt"
+
 
 	"github.com/pkg/errors"
 	"github.com/prometheus/common/model"
@@ -442,11 +444,18 @@ func funcMinOverTime(vals []parser.Value, args parser.Expressions, enh *EvalNode
 
 // === sum_over_time(Matrix parser.ValueTypeMatrix) Vector ===
 func funcSumOverTime(vals []parser.Value, args parser.Expressions, enh *EvalNodeHelper) Vector {
+	fmt.Println("Execute sum over time....")
 	return aggrOverTime(vals, enh, func(values []Point) float64 {
+		all_pt := ""
+		for _, vv := range values {
+			all_pt = fmt.Sprintf("%s[%d=%v], ", all_pt, vv.T, vv.V)
+		}
 		var sum, c float64
 		for _, v := range values {
 			sum, c = kahanSumInc(v.V, sum, c)
 		}
+		all_pt = fmt.Sprintf("sum=%v, c=%v, enhTs=%v:  %s", sum, c, enh.Ts, all_pt)
+		fmt.Println(all_pt)
 		if math.IsInf(sum, 0) {
 			return sum
 		}

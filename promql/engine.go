@@ -181,7 +181,9 @@ func (q *query) Exec(ctx context.Context) *Result {
 	if span := opentracing.SpanFromContext(ctx); span != nil {
 		span.SetTag(queryTag, q.stmt.String())
 	}
-
+	fmt.Println("Testsssssssss")
+	fmt.Println("Testsssssssss")
+	fmt.Println("Testsssssssss")
 	// Exec query.
 	res, warnings, err := q.ng.exec(ctx, q)
 
